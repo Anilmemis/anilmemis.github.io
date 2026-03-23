@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title id="page-title">Yükleniyor...</title>
+    <style>
+        :root { --ubuntu-orange: #E95420; --window-bg: #F2F1F0; }
+        body { background: #300A24; font-family: 'Ubuntu', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .window { width: 850px; height: 550px; background: var(--window-bg); border-radius: 8px 8px 0 0; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .title-bar { background: linear-gradient(to bottom, #5E5E5E, #43423E); height: 32px; color: #DDD; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+        .address-bar { background: #EDECEB; padding: 10px 15px; border-bottom: 1px solid #BCBCB5; display: flex; align-items: center; }
+        .back-btn { text-decoration: none; color: #333; background: #D6D6D1; padding: 2px 12px; border-radius: 4px; font-size: 12px; margin-right: 15px; border: 1px solid #BCBCB5; }
+        .path-box { background: white; flex: 1; padding: 4px 10px; border: 1px solid #BCBCB5; font-size: 12px; color: #555; border-radius: 3px; }
+        .content { flex: 1; background: white; padding: 25px; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 20px; align-content: start; overflow-y: auto; }
+        
+        /* Dosya Stili */
+        .file { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; transition: 0.2s; padding: 10px; border-radius: 4px; }
+        .file:hover { background: #E0E0E0; outline: 1px solid #CCC; }
+        .file-icon { width: 45px; height: 55px; background: #fff; border: 1px solid #ccc; border-top-right-radius: 12px; position: relative; margin-bottom: 8px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); }
+        .file-icon::after { content: ""; position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; background: #eee; border-left: 1px solid #ccc; border-bottom: 1px solid #ccc; border-top-right-radius: 10px; }
+        .file-name { font-size: 11px; text-align: center; word-break: break-all; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar" id="window-title">Dosya Yöneticisi</div>
+    <div class="address-bar">
+        <a href="index.html" class="back-btn">⬅ Geri</a>
+        <div class="path-box" id="current-path">/home/user/Documents/</div>
+    </div>
+    <div class="content" id="file-list">
+        </div>
+</div>
+
+<script>
+    // 1. Ayarlar: Hangi klasörde hangi dosyalar var? (Burayı güncellemeniz yeterli)
+    const folderData = {
+        "Mobil_Uygulama_Guvenligi": [
+            "ios-analiz.md", 
+            "android-zafiyetler.md", 
+            "owasp-mobile-top10.md"
+        ],
+        "Ag_Guvenligi": [
+            "nmap-tarama-raporu.md",
+            "firewall-konfigurasyonu.md"
+        ],
+        "Web_Penetrasyon": [
+            "sql-injection-analizi.md",
+            "xss-zafiyet-raporu.md"
+        ]
+    };
+
+    // 2. URL'den klasör adını al
+    const params = new URLSearchParams(window.location.search);
+    const folderName = params.get('folder');
+
+    if (folderName && folderData[folderName]) {
+        // Başlıkları otomatik düzenle
+        const cleanName = folderName.replace(/_/g, ' ');
+        document.getElementById('page-title').innerText = cleanName;
+        document.getElementById('window-title').innerText = cleanName;
+        document.getElementById('current-path').innerText += folderName;
+
+        // Dosyaları listele
+        const listContainer = document.getElementById('file-list');
+        folderData[folderName].forEach(fileName => {
+            const fileLink = `makale-goruntule.html?file=${folderName}/${fileName}`;
+            listContainer.innerHTML += `
+                <a href="${fileLink}" class="file">
+                    <div class="file-icon"></div>
+                    <div class="file-name">${fileName}</div>
+                </a>
+            `;
+        });
+    } else {
+        document.getElementById('file-list').innerHTML = "<p style='font-size:13px; color:red;'>Hata: Klasör bulunamadı veya veri tanımlanmamış.</p>";
+    }
+</script>
+</body>
+</html>
