@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ubuntu Document Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root { --ubuntu-orange: #E95420; --bg: #F2F1F0; }
+        body { background: #300A24; font-family: 'Ubuntu', sans-serif; margin: 0; padding: 20px; color: #333; }
+        
+        /* Rapor Kağıdı Görünümü */
+        .paper {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-height: 100vh;
+            border-top: 5px solid var(--ubuntu-orange);
+        }
+
+        .back-bar {
+            max-width: 800px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .btn {
+            background: var(--ubuntu-orange);
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Markdown İçerik Stilleri (Profesyonel Rapor Dili) */
+        #content h1 { border-bottom: 2px solid #EEE; padding-bottom: 10px; color: #111; }
+        #content h2 { color: var(--ubuntu-orange); margin-top: 30px; }
+        #content code { background: #F4F4F4; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        #content blockquote { border-left: 5px solid var(--ubuntu-orange); background: #FFF3EF; margin: 0; padding: 10px 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="back-bar">
+        <a href="mobil-guvenlik-makaleleri.html" class="btn">⬅ Klasöre Dön</a>
+    </div>
+
+    <div class="paper">
+        <div id="content">Yükleniyor...</div>
+    </div>
+
+    <script>
+        // URL'den dosya ismini al (Örn: ?file=analiz.md)
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileName = urlParams.get('file');
+
+        if (fileName) {
+            fetch(fileName)
+                .then(response => response.text())
+                .then(text => {
+                    document.getElementById('content').innerHTML = marked.parse(text);
+                    document.title = fileName + " - Görüntüleyici";
+                })
+                .catch(err => {
+                    document.getElementById('content').innerHTML = "Hata: Dosya bulunamadı.";
+                });
+        }
+    </script>
+</body>
+</html>
